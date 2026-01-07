@@ -1,13 +1,19 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
     const { isAuthenticated, logout, user } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const isActive = (path) =>
         location.pathname === path ? "sidebar-link active" : "sidebar-link";
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
 
     if (!isAuthenticated) return null;
 
@@ -48,7 +54,7 @@ const Sidebar = () => {
                     <div className="user-name">{user?.name}</div>
                     <div className="user-role">{user?.entityType}</div>
                 </div>
-                <button onClick={logout} className="btn-logout">
+                <button onClick={handleLogout} className="btn-logout">
                     Logout
                 </button>
             </div>
