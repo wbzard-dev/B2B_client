@@ -380,3 +380,23 @@ tr:hover {
     margin-top: 0.5rem;
     color: var(--text-main);
 }
+
+/* Form Utilities */
+.form-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .form-grid.two-col {
+        grid-template-columns: 1fr 1fr;
+    }
+    .form-grid.three-col {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.form-input {
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
