@@ -31,7 +31,6 @@
 /* Layout & Sidebar */
 #root {
     height: 100vh;
-    display: flex;
 }
 
 .app-container {

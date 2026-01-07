@@ -37,7 +37,8 @@ const RegisterCompany = () => {
     return (
         <div
             style={{
-                minHeight: "calc(100vh - 64px)",
+                minHeight: "100vh",
+                width: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
