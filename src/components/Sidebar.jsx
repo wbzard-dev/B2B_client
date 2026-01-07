@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
     const { isAuthenticated, logout, user } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
@@ -18,12 +18,29 @@ const Sidebar = () => {
     if (!isAuthenticated) return null;
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? "open" : ""}`}>
             <div className="sidebar-header">
                 <Link to="/" className="brand-logo">
                     <div className="logo-icon"></div>
                     <span className="logo-text">B2B Platform</span>
                 </Link>
+                {/* Mobile Close Button */}
+                <button className="btn-close-sidebar" onClick={onClose}>
+                    <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    >
+                        <path
+                            d="M6 18L18 6M6 6l12 12"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
             </div>
 
             <nav className="sidebar-nav">

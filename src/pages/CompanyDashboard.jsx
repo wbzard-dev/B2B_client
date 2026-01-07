@@ -71,19 +71,7 @@ const CompanyDashboard = ({ user }) => {
     return (
         <div className="container">
             {/* Dark Header Strip */}
-            <div
-                style={{
-                    marginBottom: "2.5rem",
-                    background: "var(--bg-dark)",
-                    color: "white",
-                    padding: "2.5rem",
-                    borderRadius: "1rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-                }}
-            >
+            <div className="dashboard-header">
                 <div>
                     <h1
                         style={{
@@ -108,7 +96,7 @@ const CompanyDashboard = ({ user }) => {
                         </span>
                     </p>
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div>
                     <div
                         style={{
                             fontSize: "3rem",

@@ -400,3 +400,136 @@ tr:hover {
     width: 100%;
     box-sizing: border-box; /* Ensure padding doesn't affect width */
 }
+
+/* Mobile Header & Overlay */
+.mobile-header {
+    display: none; /* Hidden on desktop */
+    background: var(--bg-dark);
+    color: white;
+    padding: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+}
+
+.mobile-brand {
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.btn-hamburger {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    backdrop-filter: blur(2px);
+}
+
+.btn-close-sidebar {
+    display: none; /* Hidden on desktop */
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background: var(--bg-dark);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.5rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .dashboard-header > div:last-child {
+        text-align: left !important; /* Override inline style if present, ideally we remove it */
+        width: 100%;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .app-container {
+        flex-direction: column;
+    }
+
+    .mobile-header {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        width: auto;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Move completely off-screen based on viewport width */
+        height: 100vh;
+        z-index: 50;
+        transition: left 0.3s ease-in-out;
+        width: 260px;
+        box-shadow: none;
+    }
+
+    .sidebar.open {
+        left: 0; /* Slide in */
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-close-sidebar {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 0.5rem; /* Ensure clickable area */
+        margin-right: -0.5rem; /* Align visual center with padding */
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        width: auto;
+        justify-content: space-between;
+        padding: 1.5rem; /* Keep padding consistent */
+    }
+
+    .brand-logo {
+        flex: 1;
+    }
+
+    .main-content {
+        padding: 1rem;
+        width: 100%;
+    }
+}
