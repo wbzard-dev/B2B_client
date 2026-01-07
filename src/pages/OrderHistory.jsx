@@ -169,7 +169,7 @@ const OrderHistory = () => {
             </div>
 
             <div className="table-container">
-                <table>
+                <table className="responsive-table">
                     <thead>
                         <tr>
                             <th>Order ID</th>
@@ -195,7 +195,7 @@ const OrderHistory = () => {
                             const pStyle = getPaymentBadge(order.paymentStatus);
                             return (
                                 <tr key={order._id}>
-                                    <td>
+                                    <td data-label="Order ID">
                                         <span
                                             style={{
                                                 fontFamily: "monospace",
@@ -208,12 +208,12 @@ const OrderHistory = () => {
                                                 .toUpperCase()}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="Date">
                                         {new Date(
                                             order.createdAt
                                         ).toLocaleDateString()}
                                     </td>
-                                    <td>
+                                    <td data-label="Payment Due">
                                         {order.paymentDueDate ? (
                                             <div
                                                 style={{
@@ -258,10 +258,13 @@ const OrderHistory = () => {
                                             </span>
                                         )}
                                     </td>
-                                    <td style={{ fontWeight: 600 }}>
+                                    <td
+                                        data-label="Total Amount"
+                                        style={{ fontWeight: 600 }}
+                                    >
                                         ₹{order.totalAmount}
                                     </td>
-                                    <td>
+                                    <td data-label="Order Status">
                                         <span
                                             className={`badge ${getStatusBadge(
                                                 order.status
@@ -270,7 +273,7 @@ const OrderHistory = () => {
                                             {order.status}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td data-label="Payment Status">
                                         <span
                                             style={{
                                                 padding: "0.25rem 0.5rem",
@@ -285,7 +288,7 @@ const OrderHistory = () => {
                                         </span>
                                     </td>
 
-                                    <td>
+                                    <td data-label="Receipt">
                                         <button
                                             onClick={() =>
                                                 generateReceipt(order)
@@ -304,7 +307,7 @@ const OrderHistory = () => {
                                     </td>
                                     {user.entityType === "Company" && (
                                         <>
-                                            <td>
+                                            <td data-label="Verification">
                                                 {order.paymentStatus ===
                                                     "Verification Pending" && (
                                                     <button
@@ -346,7 +349,7 @@ const OrderHistory = () => {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td>
+                                            <td data-label="Ship/Deliver">
                                                 <div
                                                     style={{
                                                         display: "flex",
@@ -423,7 +426,7 @@ const OrderHistory = () => {
                                     )}
 
                                     {user.entityType === "Distributor" && (
-                                        <td>
+                                        <td data-label="Payment">
                                             {order.paymentStatus !== "Paid" &&
                                                 order.paymentStatus !==
                                                     "Verification Pending" &&
