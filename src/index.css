@@ -1,5 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+}
+
 :root {
     /* Color Palette - Slate & Indigo */
     --primary: #4f46e5;
@@ -43,8 +57,10 @@
 .main-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     background-color: var(--bg-light);
     padding: 2rem;
+    height: 100%;
 }
 
 .sidebar {

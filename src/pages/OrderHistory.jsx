@@ -174,6 +174,7 @@ const OrderHistory = () => {
                         <tr>
                             <th>Order ID</th>
                             <th>Date</th>
+                            {user.entityType === "Company" && <th>Distributor</th>}
                             <th>Payment Due</th>
                             <th>Total Amount</th>
                             <th>Order Status</th>
@@ -213,6 +214,11 @@ const OrderHistory = () => {
                                             order.createdAt
                                         ).toLocaleDateString()}
                                     </td>
+                                    {user.entityType === "Company" && (
+                                        <td data-label="Distributor">
+                                            {order.distributorId?.name || "N/A"}
+                                        </td>
+                                    )}
                                     <td data-label="Payment Due">
                                         {order.paymentDueDate ? (
                                             <div
@@ -235,7 +241,7 @@ const OrderHistory = () => {
                                                         order.paymentDueDate
                                                     ) &&
                                                     order.paymentStatus !==
-                                                        "Paid" && (
+                                                    "Paid" && (
                                                         <span
                                                             style={{
                                                                 color: "var(--danger)",
@@ -310,44 +316,44 @@ const OrderHistory = () => {
                                             <td data-label="Verification">
                                                 {order.paymentStatus ===
                                                     "Verification Pending" && (
-                                                    <button
-                                                        onClick={() =>
-                                                            verifyPayment(
-                                                                order._id
-                                                            )
-                                                        }
-                                                        className="btn btn-success"
-                                                        style={{
-                                                            padding:
-                                                                "0.25rem 0.5rem",
-                                                            fontSize: "0.75rem",
-                                                        }}
-                                                    >
-                                                        Verify Received
-                                                    </button>
-                                                )}
+                                                        <button
+                                                            onClick={() =>
+                                                                verifyPayment(
+                                                                    order._id
+                                                                )
+                                                            }
+                                                            className="btn btn-success"
+                                                            style={{
+                                                                padding:
+                                                                    "0.25rem 0.5rem",
+                                                                fontSize: "0.75rem",
+                                                            }}
+                                                        >
+                                                            Verify Received
+                                                        </button>
+                                                    )}
                                                 {order.paymentStatus ===
                                                     "Pending" && (
-                                                    <span
-                                                        style={{
-                                                            fontSize: "0.8rem",
-                                                            color: "var(--text-muted)",
-                                                        }}
-                                                    >
-                                                        Waiting
-                                                    </span>
-                                                )}
+                                                        <span
+                                                            style={{
+                                                                fontSize: "0.8rem",
+                                                                color: "var(--text-muted)",
+                                                            }}
+                                                        >
+                                                            Waiting
+                                                        </span>
+                                                    )}
                                                 {order.paymentStatus ===
                                                     "Paid" && (
-                                                    <span
-                                                        style={{
-                                                            fontSize: "0.8rem",
-                                                            color: "var(--success)",
-                                                        }}
-                                                    >
-                                                        ✓ Verified
-                                                    </span>
-                                                )}
+                                                        <span
+                                                            style={{
+                                                                fontSize: "0.8rem",
+                                                                color: "var(--success)",
+                                                            }}
+                                                        >
+                                                            ✓ Verified
+                                                        </span>
+                                                    )}
                                             </td>
                                             <td data-label="Ship/Deliver">
                                                 <div
@@ -358,68 +364,68 @@ const OrderHistory = () => {
                                                 >
                                                     {order.status ===
                                                         "Pending" && (
-                                                        <button
-                                                            onClick={() =>
-                                                                updateStatus(
-                                                                    order._id,
-                                                                    "Confirmed"
-                                                                )
-                                                            }
-                                                            className="btn btn-warning"
-                                                            style={{
-                                                                padding:
-                                                                    "0.25rem 0.5rem",
-                                                                fontSize:
-                                                                    "0.75rem",
-                                                                backgroundColor:
-                                                                    "#f59e0b",
-                                                                color: "white",
-                                                                border: "none",
-                                                            }}
-                                                        >
-                                                            Confirm
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    updateStatus(
+                                                                        order._id,
+                                                                        "Confirmed"
+                                                                    )
+                                                                }
+                                                                className="btn btn-warning"
+                                                                style={{
+                                                                    padding:
+                                                                        "0.25rem 0.5rem",
+                                                                    fontSize:
+                                                                        "0.75rem",
+                                                                    backgroundColor:
+                                                                        "#f59e0b",
+                                                                    color: "white",
+                                                                    border: "none",
+                                                                }}
+                                                            >
+                                                                Confirm
+                                                            </button>
+                                                        )}
                                                     {order.status ===
                                                         "Confirmed" && (
-                                                        <button
-                                                            onClick={() =>
-                                                                updateStatus(
-                                                                    order._id,
-                                                                    "Shipped"
-                                                                )
-                                                            }
-                                                            className="btn btn-primary"
-                                                            style={{
-                                                                padding:
-                                                                    "0.25rem 0.5rem",
-                                                                fontSize:
-                                                                    "0.75rem",
-                                                            }}
-                                                        >
-                                                            Ship
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    updateStatus(
+                                                                        order._id,
+                                                                        "Shipped"
+                                                                    )
+                                                                }
+                                                                className="btn btn-primary"
+                                                                style={{
+                                                                    padding:
+                                                                        "0.25rem 0.5rem",
+                                                                    fontSize:
+                                                                        "0.75rem",
+                                                                }}
+                                                            >
+                                                                Ship
+                                                            </button>
+                                                        )}
                                                     {order.status ===
                                                         "Shipped" && (
-                                                        <button
-                                                            onClick={() =>
-                                                                updateStatus(
-                                                                    order._id,
-                                                                    "Delivered"
-                                                                )
-                                                            }
-                                                            className="btn btn-success"
-                                                            style={{
-                                                                padding:
-                                                                    "0.25rem 0.5rem",
-                                                                fontSize:
-                                                                    "0.75rem",
-                                                            }}
-                                                        >
-                                                            Deliver
-                                                        </button>
-                                                    )}
+                                                            <button
+                                                                onClick={() =>
+                                                                    updateStatus(
+                                                                        order._id,
+                                                                        "Delivered"
+                                                                    )
+                                                                }
+                                                                className="btn btn-success"
+                                                                style={{
+                                                                    padding:
+                                                                        "0.25rem 0.5rem",
+                                                                    fontSize:
+                                                                        "0.75rem",
+                                                                }}
+                                                            >
+                                                                Deliver
+                                                            </button>
+                                                        )}
                                                 </div>
                                             </td>
                                         </>
@@ -429,7 +435,7 @@ const OrderHistory = () => {
                                         <td data-label="Payment">
                                             {order.paymentStatus !== "Paid" &&
                                                 order.paymentStatus !==
-                                                    "Verification Pending" &&
+                                                "Verification Pending" &&
                                                 order.status !== "Canceled" && (
                                                     <button
                                                         onClick={() =>
@@ -449,15 +455,15 @@ const OrderHistory = () => {
                                                 )}
                                             {order.paymentStatus ===
                                                 "Verification Pending" && (
-                                                <span
-                                                    style={{
-                                                        fontSize: "0.8rem",
-                                                        color: "#854d0e",
-                                                    }}
-                                                >
-                                                    Processing...
-                                                </span>
-                                            )}
+                                                    <span
+                                                        style={{
+                                                            fontSize: "0.8rem",
+                                                            color: "#854d0e",
+                                                        }}
+                                                    >
+                                                        Processing...
+                                                    </span>
+                                                )}
                                         </td>
                                     )}
                                 </tr>

@@ -12,7 +12,10 @@ const Dashboard = () => {
         if (!loading && !isAuthenticated) {
             navigate("/login");
         }
-    }, [loading, isAuthenticated, navigate]);
+        if (!loading && user?.role === "company_user") {
+            navigate("/products");
+        }
+    }, [loading, isAuthenticated, user, navigate]);
 
     if (loading) {
         return (

@@ -83,6 +83,8 @@ const DistributorDashboard = ({ user }) => {
                     <div style={{ display: 'flex', gap: '1rem' }}>
                         <Link to="/products" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>Browse Catalog & Place Order</Link>
                         <Link to="/orders" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>View Order History</Link>
+                        <Link to="/inventory" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--primary)', color: 'var(--primary)', background: 'transparent' }}>Manage Physical Stock</Link>
+                        <Link to="/sales-report" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', background: 'var(--success)', borderColor: 'var(--success)' }}>Report Daily Sales</Link>
                     </div>
                 </div>
 

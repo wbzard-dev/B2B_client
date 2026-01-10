@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import QuantitySelector from "../components/QuantitySelector";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -39,7 +40,7 @@ const ProductList = () => {
     }, [searchQuery, products]);
 
     const handleQuantityChange = (productId, val) => {
-        setQuantities({ ...quantities, [productId]: parseInt(val) || 0 });
+        setQuantities({ ...quantities, [productId]: val });
     };
 
     const handlePlaceOrder = async () => {
@@ -64,28 +65,46 @@ const ProductList = () => {
         }
     };
 
+    const [showHistory, setShowHistory] = useState(null); // Product for history
+    const [historyLogs, setHistoryLogs] = useState([]);
+
     const handleRestock = async (product) => {
-        const newStock = prompt(
-            `Update stock for ${product.name}:`,
-            product.stock
+        const adjustmentStr = prompt(
+            `Add stock to ${product.name} (Current: ${product.stock}):`,
+            "0"
         );
-        if (newStock !== null) {
-            const stockVal = parseInt(newStock);
-            if (isNaN(stockVal) || stockVal < 0) {
-                alert("Invalid stock value");
+        if (adjustmentStr !== null && adjustmentStr !== "0") {
+            const adjustmentVal = parseInt(adjustmentStr);
+            if (isNaN(adjustmentVal) || adjustmentVal === 0) {
+                alert("Invalid adjustment value");
                 return;
             }
+
+            const reason = prompt("Enter reason for restocking:", adjustmentVal > 0 ? "Regular Restock" : "Adjustment");
+            if (reason === null) return; // Cancel if no reason
+
             try {
-                await api.put(`/products/${product._id}`, { stock: stockVal });
-                // Optimistic update
+                const res = await api.put(`/products/${product._id}`, { stockAdjustment: adjustmentVal, reason });
+                // Update with server response to be sure
                 const updated = products.map((p) =>
-                    p._id === product._id ? { ...p, stock: stockVal } : p
+                    p._id === product._id ? { ...p, stock: res.data.stock } : p
                 );
                 setProducts(updated);
+                alert(`Stock successfully ${adjustmentVal > 0 ? 'added' : 'reduced'}!`);
             } catch (err) {
                 console.error(err);
-                alert("Failed to update stock");
+                alert("Failed to update stock: " + (err.response?.data?.msg || err.message));
             }
+        }
+    };
+
+    const fetchHistory = async (product) => {
+        try {
+            const res = await api.get(`/products/${product._id}/logs`);
+            setHistoryLogs(res.data);
+            setShowHistory(product);
+        } catch (err) {
+            alert("Failed to fetch history");
         }
     };
 
@@ -113,6 +132,48 @@ const ProductList = () => {
 
     return (
         <div className="container">
+            {/* Stock History Modal */}
+            {showHistory && (
+                <div className="modal-overlay">
+                    <div className="modal-content" style={{ maxWidth: '600px' }}>
+                        <div className="modal-header">
+                            <h3>Stock History: {showHistory.name}</h3>
+                            <button className="btn-close" onClick={() => setShowHistory(null)}>&times;</button>
+                        </div>
+                        <div style={{ maxHeight: '400px', overflowY: 'auto', marginTop: '1rem' }}>
+                            <table className="responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>User</th>
+                                        <th>Change</th>
+                                        <th>Stock</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {historyLogs.map(log => (
+                                        <tr key={log._id}>
+                                            <td style={{ fontSize: '0.8rem' }}>{new Date(log.createdAt).toLocaleString()}</td>
+                                            <td style={{ fontSize: '0.8rem' }}>{log.userId?.name}</td>
+                                            <td style={{ color: log.change > 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 700 }}>
+                                                {log.change > 0 ? `+${log.change}` : log.change}
+                                            </td>
+                                            <td style={{ fontWeight: 600 }}>{log.newStock}</td>
+                                            <td style={{ fontSize: '0.8rem' }}>{log.reason}</td>
+                                        </tr>
+                                    ))}
+                                    {historyLogs.length === 0 && <tr><td colSpan="5" style={{ textAlign: 'center', padding: '1rem' }}>No history found</td></tr>}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-secondary" onClick={() => setShowHistory(null)}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header Section */}
             <div className="page-header">
                 <div>
@@ -242,11 +303,11 @@ const ProductList = () => {
                 >
                     <thead>
                         <tr>
-                            <th style={{ width: "40%" }}>Product</th>
+                            <th style={{ width: "35%" }}>Product</th>
                             <th style={{ width: "15%" }}>Price</th>
                             <th style={{ width: "15%" }}>Status</th>
                             <th style={{ width: "15%" }}>Category</th>
-                            <th style={{ width: "15%", textAlign: "right" }}>
+                            <th style={{ width: "20%", textAlign: "right" }}>
                                 {user.entityType === "Company"
                                     ? "Actions"
                                     : "Order Qty"}
@@ -380,56 +441,41 @@ const ProductList = () => {
                                                     width: "100%",
                                                 }}
                                             >
-                                                <input
-                                                    type="number"
-                                                    min="0"
-                                                    disabled={
-                                                        product.stock === 0
-                                                    }
-                                                    placeholder="0"
-                                                    value={
-                                                        quantities[
-                                                            product._id
-                                                        ] || ""
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleQuantityChange(
-                                                            product._id,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    style={{
-                                                        width: "80px",
-                                                        textAlign: "center",
-                                                        borderColor:
-                                                            quantities[
-                                                                product._id
-                                                            ] > 0
-                                                                ? "var(--primary)"
-                                                                : "var(--border)",
-                                                        background:
-                                                            product.stock === 0
-                                                                ? "var(--surface-alt)"
-                                                                : "white",
-                                                    }}
+                                                <QuantitySelector
+                                                    value={quantities[product._id] || 0}
+                                                    onChange={(val) => handleQuantityChange(product._id, val)}
+                                                    max={product.stock}
+                                                    unit={product.unit}
                                                 />
                                             </div>
                                         )}
-                                        {user?.role === "company_admin" && (
-                                            <button
-                                                onClick={() =>
-                                                    handleRestock(product)
-                                                }
-                                                className="btn"
-                                                style={{
-                                                    fontSize: "0.75rem",
-                                                    padding: "0.4rem 0.8rem",
-                                                    border: "1px solid var(--border)",
-                                                    background: "white",
-                                                }}
-                                            >
-                                                Adjust Stock
-                                            </button>
+                                        {user.entityType === "Company" && (
+                                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                                <button
+                                                    onClick={() =>
+                                                        handleRestock(product)
+                                                    }
+                                                    className="btn"
+                                                    style={{
+                                                        fontSize: "0.75rem",
+                                                        padding: "0.4rem 0.8rem",
+                                                        border: "1px solid var(--border)",
+                                                        background: "white",
+                                                    }}
+                                                >
+                                                    Adjust Stock
+                                                </button>
+                                                <button
+                                                    onClick={() => fetchHistory(product)}
+                                                    className="btn btn-secondary"
+                                                    style={{
+                                                        fontSize: "0.75rem",
+                                                        padding: "0.4rem 0.8rem",
+                                                    }}
+                                                >
+                                                    History
+                                                </button>
+                                            </div>
                                         )}
                                     </td>
                                 </tr>

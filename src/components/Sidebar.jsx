@@ -46,22 +46,54 @@ const Sidebar = ({ isOpen, onClose }) => {
             <nav className="sidebar-nav">
                 <div className="nav-section">
                     <span className="nav-label">Menu</span>
-                    <Link to="/" className={isActive("/")}>
-                        Dashboard
-                    </Link>
+                    {user?.role !== "company_user" && (
+                        <Link to="/" className={isActive("/")}>
+                            Dashboard
+                        </Link>
+                    )}
                     <Link to="/products" className={isActive("/products")}>
                         Products
                     </Link>
                     <Link to="/orders" className={isActive("/orders")}>
                         Orders
                     </Link>
-                    {user?.entityType === "Company" && (
-                        <Link
-                            to="/distributors"
-                            className={isActive("/distributors")}
-                        >
-                            Distributors
-                        </Link>
+                    {user?.role === "company_admin" && (
+                        <>
+                            <Link
+                                to="/distributors"
+                                className={isActive("/distributors")}
+                            >
+                                Distributors
+                            </Link>
+                            <Link
+                                to="/analytics"
+                                className={isActive("/analytics")}
+                            >
+                                Analytics
+                            </Link>
+                            <Link
+                                to="/employees"
+                                className={isActive("/employees")}
+                            >
+                                Employees
+                            </Link>
+                        </>
+                    )}
+                    {user?.entityType === "Distributor" && (
+                        <>
+                            <Link
+                                to="/inventory"
+                                className={isActive("/inventory")}
+                            >
+                                Inventory
+                            </Link>
+                            <Link
+                                to="/sales-report"
+                                className={isActive("/sales-report")}
+                            >
+                                Sales Report
+                            </Link>
+                        </>
                     )}
                 </div>
             </nav>

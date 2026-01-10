@@ -1,6 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import RegisterCompany from "./pages/RegisterCompany";
@@ -10,7 +10,10 @@ import AddProduct from "./pages/AddProduct";
 import OrderHistory from "./pages/OrderHistory";
 import Dashboard from "./pages/Dashboard";
 import DistributorList from "./pages/DistributorList";
-
+import InventoryTracking from "./pages/InventoryTracking";
+import DailySalesReport from "./pages/DailySalesReport";
+import CompanyAnalytics from './pages/CompanyAnalytics';
+import EmployeeManagement from './pages/EmployeeManagement';
 const App = () => {
     return (
         <AuthProvider>
@@ -37,6 +40,11 @@ const App = () => {
                         <Route path="/products" element={<ProductList />} />
                         <Route path="/products/new" element={<AddProduct />} />
                         <Route path="/orders" element={<OrderHistory />} />
+                        <Route path="/inventory" element={<InventoryTracking />} />
+                        <Route path="/sales-report" element={<DailySalesReport />} />
+                        <Route path="/analytics" element={<CompanyAnalytics />} />
+                        <Route path="/employees" element={<EmployeeManagement />} />
+                        <Route path="/distributor-dashboard" element={<Navigate to="/" replace />} />
                     </Route>
                 </Routes>
             </Router>

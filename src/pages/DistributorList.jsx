@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import DistributorSalesCalendar from "./DistributorSalesCalendar";
 
 const DistributorList = () => {
     const [distributors, setDistributors] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedDistSales, setSelectedDistSales] = useState(null);
     const { user } = useAuth();
 
     const fetchDistributors = async () => {
@@ -151,21 +153,37 @@ const DistributorList = () => {
                                             </>
                                         )}
                                         {dist.status === "Active" && (
-                                            <button
-                                                onClick={() =>
-                                                    updateStatus(
-                                                        dist._id,
-                                                        "Suspended"
-                                                    )
-                                                }
-                                                className="btn btn-danger"
-                                                style={{
-                                                    padding: "0.25rem 0.5rem",
-                                                    fontSize: "0.75rem",
-                                                }}
-                                            >
-                                                Suspend
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() =>
+                                                        setSelectedDistSales({ id: dist._id, name: dist.name })
+                                                    }
+                                                    className="btn btn-secondary"
+                                                    style={{
+                                                        padding: "0.25rem 0.5rem",
+                                                        fontSize: "0.75rem",
+                                                        borderColor: "var(--success)",
+                                                        color: "var(--success)"
+                                                    }}
+                                                >
+                                                    View Sales
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        updateStatus(
+                                                            dist._id,
+                                                            "Suspended"
+                                                        )
+                                                    }
+                                                    className="btn btn-danger"
+                                                    style={{
+                                                        padding: "0.25rem 0.5rem",
+                                                        fontSize: "0.75rem",
+                                                    }}
+                                                >
+                                                    Suspend
+                                                </button>
+                                            </>
                                         )}
                                         {dist.status === "Suspended" && (
                                             <button
@@ -205,6 +223,14 @@ const DistributorList = () => {
                     </tbody>
                 </table>
             </div>
+
+            {selectedDistSales && (
+                <DistributorSalesCalendar
+                    distributorId={selectedDistSales.id}
+                    distributorName={selectedDistSales.name}
+                    onClose={() => setSelectedDistSales(null)}
+                />
+            )}
         </div>
     );
 };
