@@ -14,35 +14,59 @@ body {
     width: 100%;
     /* overflow: hidden; Removed to allow scrolling on non-app-container pages */
     font-family: "Inter", sans-serif;
-    background-color: var(--bg-light);
+    /* Warm Premium Background matching screenshot */
+    background: radial-gradient(
+        circle at 0% 0%,
+        #a48674 0%,
+        #68564b 40%,
+        #2f2521 100%
+    );
+    background-attachment: fixed;
+    background-size: cover;
+    color: var(--text-main);
 }
 
 :root {
-    /* Color Palette - Slate & Indigo */
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --secondary: #64748b;
-    --bg-dark: #0f172a;
-    --bg-light: #f8fafc;
-    --surface: #ffffff;
-    --surface-alt: #f1f5f9;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
+    /* Glassmorphism Palette - Warm & Premium */
+    /* Base Colors */
+    --primary: #f59e0b; /* Gold/Amber for accents */
+    --primary-hover: #d97706;
+    --secondary: rgba(255, 255, 255, 0.7);
+
+    /* Backgrounds - We handle the main bg on body, these are for overlays */
+    --bg-dark: rgba(0, 0, 0, 0.8);
+    --bg-light: transparent; /* Was #f8fafc */
+
+    /* Glass Surfaces */
+    --glass-bg: rgba(255, 255, 255, 0.07);
+    --glass-bg-dark: rgba(0, 0, 0, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-highlight: rgba(255, 255, 255, 0.2);
+
+    --surface: var(--glass-bg); /* Mapped for existing classes */
+    --surface-alt: rgba(255, 255, 255, 0.05);
+
+    /* Text */
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --border: var(--glass-border);
+
+    /* States */
     --danger: #ef4444;
     --success: #10b981;
     --warning: #f59e0b;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-        0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-        0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 50px 0 rgba(0, 0, 0, 0.5);
 
     /* Radius */
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.25rem;
+
+    /* Effects */
+    --blur-md: blur(20px);
 }
 
 /* Layout & Sidebar */
@@ -61,21 +85,29 @@ body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: var(--bg-light);
+    background-color: transparent;
     padding: 2rem;
     height: 100%;
 }
 
 .sidebar {
-    width: 260px;
-    background: var(--bg-dark);
-    border-right: 1px solid #334155;
+    width: 280px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
     height: 100%;
-    height: 100dvh; /* Fallback and dynamic viewport height */
+    height: 100dvh;
     flex-shrink: 0;
-    overflow: hidden; /* Ensure children don't overflow the rounded corners or container */
+    margin: 10px 0 10px 10px; /* Floating sidebar look */
+    border-radius: var(--radius-lg); /* Rounded glass panel */
+    box-shadow: var(--shadow-lg);
 }
 
 .sidebar-header {
@@ -147,12 +179,37 @@ body {
 
 .sidebar-footer {
     padding: 1.5rem;
-    border-top: 1px solid #1e293b;
-    background: #0b1120;
+    border-top: 1px solid var(--glass-border);
+    background: transparent;
+}
+
+.user-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: white;
+    text-decoration: none;
+    flex: 1;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .user-info {
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .user-name {
@@ -164,7 +221,7 @@ body {
 .user-role {
     color: var(--text-muted);
     font-size: 0.75rem;
-    margin-top: 0.25rem;
+    margin-top: 0;
 }
 
 /* Auth Layout - Curved Card Design */
@@ -458,11 +515,14 @@ a:hover {
 }
 
 .card {
-    background: var(--surface);
+    background: var(--glass-bg);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     padding: 2rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    color: var(--text-main);
 }
 
 .btn {
@@ -488,9 +548,13 @@ a:hover {
 }
 
 .btn-secondary {
-    background-color: var(--surface);
-    color: var(--text-main);
-    border: 1px solid var(--border);
+    background-color: transparent;
+    color: white;
+    border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn-danger {
@@ -520,11 +584,18 @@ select,
 textarea {
     width: 100%;
     padding: 0.625rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
     font-family: inherit;
     font-size: 0.875rem;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 input:focus,
@@ -574,22 +645,22 @@ textarea:focus {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--surface);
+    background: transparent;
     font-size: 0.875rem;
 }
 
 th {
-    background: var(--surface-alt);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-muted);
     font-weight: 600;
     text-align: left;
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 td {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--glass-border);
     color: var(--text-main);
 }
 
@@ -598,7 +669,7 @@ tr:last-child td {
 }
 
 tr:hover {
-    background-color: var(--surface-alt);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Status Badges */
@@ -638,11 +709,30 @@ tr:hover {
 }
 
 .metric-card {
-    background: var(--surface);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
     border-radius: var(--radius-lg);
     padding: 1.5rem;
     box-shadow: var(--shadow-md);
-    border-left: 4px solid var(--primary);
+    /* border-left: 4px solid var(--primary); Removed for glass look */
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), transparent);
 }
 
 .metric-title {
@@ -722,14 +812,21 @@ tr:hover {
 
 /* Dashboard Header */
 .dashboard-header {
-    background: var(--bg-dark);
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.2) 100%
+    ); /* Darker glass for header */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
     color: white;
     padding: 2.5rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
     margin-bottom: 2.5rem;
 }
 
@@ -760,11 +857,12 @@ tr:hover {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    background: var(--surface);
+    background: var(--glass-bg);
     padding: 1rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
 }
 
 .search-wrapper {
