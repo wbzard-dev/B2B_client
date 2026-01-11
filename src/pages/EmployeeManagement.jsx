@@ -3,7 +3,11 @@ import api from "../services/api";
 
 const EmployeeManagement = () => {
     const [employees, setEmployees] = useState([]);
-    const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+    });
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
@@ -41,22 +45,46 @@ const EmployeeManagement = () => {
         }
     };
 
-    if (loading) return <div className="container" style={{ padding: "4rem", textAlign: "center" }}>Loading Employees...</div>;
+    if (loading)
+        return (
+            <div
+                className="container"
+                style={{ padding: "4rem", textAlign: "center" }}
+            >
+                Loading Employees...
+            </div>
+        );
 
     return (
         <div className="container">
             <div style={{ marginBottom: "2rem" }}>
-                <h1 style={{ fontSize: "2rem", fontWeight: 800 }}>Employee Management</h1>
-                <p style={{ color: "var(--text-muted)" }}>Add and manage company employees who can manage products and orders.</p>
+                <h1 style={{ fontSize: "2rem", fontWeight: 800 }}>
+                    Employee Management
+                </h1>
+                <p style={{ color: "var(--text-muted)" }}>
+                    Add and manage company employees who can manage products and
+                    orders.
+                </p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "2rem" }}>
+            <div className="employee-management-grid">
                 {/* Add Employee Form */}
-                <div className="metric-card" style={{ padding: "1.5rem", alignSelf: "start" }}>
+                <div
+                    className="metric-card"
+                    style={{ padding: "1.5rem", alignSelf: "start" }}
+                >
                     <h3 style={{ marginBottom: "1.5rem" }}>Add New Employee</h3>
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: "1rem" }}>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>Name</label>
+                            <label
+                                style={{
+                                    display: "block",
+                                    marginBottom: "0.5rem",
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Name
+                            </label>
                             <input
                                 type="text"
                                 name="name"
@@ -68,7 +96,15 @@ const EmployeeManagement = () => {
                             />
                         </div>
                         <div style={{ marginBottom: "1rem" }}>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>Email Address</label>
+                            <label
+                                style={{
+                                    display: "block",
+                                    marginBottom: "0.5rem",
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Email Address
+                            </label>
                             <input
                                 type="email"
                                 name="email"
@@ -80,7 +116,15 @@ const EmployeeManagement = () => {
                             />
                         </div>
                         <div style={{ marginBottom: "1.5rem" }}>
-                            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>Password</label>
+                            <label
+                                style={{
+                                    display: "block",
+                                    marginBottom: "0.5rem",
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Password
+                            </label>
                             <input
                                 type="password"
                                 name="password"
@@ -92,7 +136,12 @@ const EmployeeManagement = () => {
                                 style={{ width: "100%" }}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={submitting}>
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            style={{ width: "100%" }}
+                            disabled={submitting}
+                        >
                             {submitting ? "Adding..." : "Add Employee"}
                         </button>
                     </form>
@@ -114,20 +163,42 @@ const EmployeeManagement = () => {
                             <tbody>
                                 {employees.map((emp) => (
                                     <tr key={emp._id}>
-                                        <td><strong>{emp.name}</strong></td>
+                                        <td>
+                                            <strong>{emp.name}</strong>
+                                        </td>
                                         <td>{emp.email}</td>
                                         <td>
-                                            <span style={{ fontSize: "0.75rem", padding: "0.2rem 0.5rem", background: "var(--surface-alt)", borderRadius: "4px" }}>
+                                            <span
+                                                style={{
+                                                    fontSize: "0.75rem",
+                                                    padding: "0.2rem 0.5rem",
+                                                    background:
+                                                        "var(--surface-alt)",
+                                                    borderRadius: "4px",
+                                                }}
+                                            >
                                                 Employee
                                             </span>
                                         </td>
-                                        <td>{new Date(emp.createdAt).toLocaleDateString()}</td>
+                                        <td>
+                                            {new Date(
+                                                emp.createdAt
+                                            ).toLocaleDateString()}
+                                        </td>
                                     </tr>
                                 ))}
                                 {employees.length === 0 && (
                                     <tr>
-                                        <td colSpan="4" style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
-                                            No employees found. Add one to get started!
+                                        <td
+                                            colSpan="4"
+                                            style={{
+                                                textAlign: "center",
+                                                padding: "2rem",
+                                                color: "var(--text-muted)",
+                                            }}
+                                        >
+                                            No employees found. Add one to get
+                                            started!
                                         </td>
                                     </tr>
                                 )}

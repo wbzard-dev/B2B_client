@@ -725,3 +725,17 @@ tr:hover {
         margin-bottom: 8px;
     }
 }
+
+/* Employee Management Grid */
+.employee-management-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .employee-management-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
