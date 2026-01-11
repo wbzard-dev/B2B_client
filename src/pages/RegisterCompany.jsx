@@ -191,6 +191,7 @@ const RegisterCompany = () => {
                                     width: "100%",
                                     height: "100%",
                                     objectFit: "contain",
+                                    borderRadius: "50% 0 0 50%",
                                 }}
                                 src="https://ik.imagekit.io/ugdlmxlzt/Screenshot%202026-01-11%20at%206.35.57%E2%80%AFPM.png"
                             />

@@ -220,17 +220,14 @@ body {
 }
 
 /* Auth Layout - Curved Card Design */
+/* Auth Layout - Glass Card Design */
 .auth-wrapper {
     min-height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(
-        135deg,
-        #eef2ff 0%,
-        #fae8ff 100%
-    ); /* Soft gradient bg */
+    background: transparent; /* Uses body background */
     padding: 2rem;
 }
 
@@ -238,107 +235,56 @@ body {
     display: flex;
     width: 100%;
     max-width: 1100px;
-    background: var(--surface);
-    border-radius: 2.5rem; /* Large rounded corners for the card */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); /* Soft deep shadow */
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-    min-height: 700px; /* Ensure substantial height */
+    min-height: 600px;
     position: relative;
 }
 
 /* Left Side - Form */
 .auth-form-side {
     flex: 1;
-    padding: 4rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: var(--surface);
+    background: transparent;
     z-index: 10;
+    color: white;
 }
 
 /* Right Side - Branding with Curve */
 .auth-brand-side {
     flex: 1.2;
-    background: linear-gradient(135deg, #2d33ac 0%, #2c32aa 100%);
-    color: white;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
+    );
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* The Curve implementation */
-    clip-path: ellipse(
-        150% 100% at 90% 50%
-    ); /* Start with simple clip, adjust for "inset" look */
-    /* Better approach for the specific "concave/convex" look in screenshot:
-       The screenshot shows the blue part "invading" the white part with a large curve.
-       Let's try a masking approach or a simple border-radius trick on the container if possible.
-       Actually, the screenshot shows the LEFT side (white) is rectangular, and the RIGHT side (blue) creates a curve.
-       Standard approach: Use a shape separator or absolute positioning.
-    */
-    /* Resetting clip path to try a generated shape approach */
-    clip-path: none;
-}
-
-/* Creating the curve using a pseudo-element on the brand side */
-.auth-brand-side::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: -100px; /* Pull it left to overlap */
-    width: 200px;
-    background: var(--surface); /* Same as form side bg */
-    border-radius: 0 50% 50% 0 / 0 50% 50% 0; /* Vertical oval curve */
-    /* This creates a convex white curve into the blue? No, we want blue convex into white. */
-    /* To get blue convex into white: The blue container needs to be on top and have a border radius?
-       Or use a white circle on top of blue?
-    */
-    display: none; /* Let's use the explicit shape method below */
-}
-
-/* Actual Curve Implementation matching screenshot (Blue Convex Curve) */
-.auth-brand-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("https://img.freepik.com/free-vector/gradient-network-connection-background_23-2148879892.jpg"); /* Conceptual bg */
-    background: linear-gradient(135deg, #4f46e5 0%, #60a5fa 100%);
-    /* We need the left edge to be curved OUTWARDS (Convex) */
-    border-top-left-radius: 50% 100%;
-    border-bottom-left-radius: 50% 100%;
-    /* This makes a huge curve. */
-
-    /* Let's try a different simpler way that is robust:
-       Just a big border radius on the brand side container itself if it works.
-    */
-}
-
-/* Refined implementation */
-.auth-brand-side {
-    /* To mimic the screenshot: The Blue section has a large curve on its left edge */
-    border-top-left-radius: 300px;
-    border-bottom-left-radius: 300px;
-    position: relative;
-    z-index: 5;
-
-    /* Content centering */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    /* Simplified visual for glass theme, removing complex clip-path that causes issues in glass */
+    border-left: 1px solid var(--glass-border);
 }
 
 /* New Auth Typography */
 .auth-title {
     font-size: 2rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-muted);
 }
 
 .auth-input-group {
@@ -347,31 +293,32 @@ body {
 
 .auth-label {
     display: block;
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 0.5rem;
-    color: var(--text-main);
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 .auth-input {
     width: 100%;
-    padding: 1rem;
-    background: #f8fafc;
-    border: 1px solid transparent;
-    border-radius: 0.75rem;
-    font-size: 0.95rem;
-    color: var(--text-main);
+    padding: 0.875rem 1rem;
+    background: rgba(0, 0, 0, 0.3); /* Darker input bg for contrast */
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: white;
     transition: all 0.2s;
 }
 
 .auth-input:focus {
-    background: #fff;
+    background: rgba(0, 0, 0, 0.5);
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
     outline: none;
 }
 
 .auth-input::placeholder {
-    color: #94a3b8;
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .auth-options {
@@ -394,25 +341,30 @@ body {
     color: var(--primary);
     font-weight: 600;
     text-decoration: none;
+    transition: color 0.2s;
+}
+.auth-link:hover {
+    color: var(--primary-hover);
 }
 
 .auth-btn {
     width: 100%;
     padding: 1rem;
-    background: #4f46e5;
+    background: var(--primary);
     color: white;
-    font-weight: 700;
+    font-weight: 600;
     border: none;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .auth-btn:hover {
+    background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 20px 20px -5px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
 .auth-footer-text {
@@ -422,55 +374,50 @@ body {
     font-size: 0.9rem;
 }
 
-/* Floating 3D Elements (CSS only placeholders for the illustration) */
+/* Floating 3D Elements */
 .floating-circle {
     position: absolute;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.05)
+    );
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive - Mobile Screenshot Match */
+/* Responsive */
 @media (max-width: 900px) {
     .auth-wrapper {
-        padding: 0;
-        background: #fff; /* Simplified for mobile as per usual, but let's try to match screenshot */
-        align-items: flex-start;
+        padding: 1rem;
+        align-items: center;
     }
 
     .auth-card {
-        flex-direction: column-reverse; /* Form on bottom, Brand on top */
-        border-radius: 0;
-        box-shadow: none;
-        max-width: 100%;
-        min-height: 100vh;
+        flex-direction: column-reverse;
+        border-radius: var(--radius-lg);
+        max-width: 500px; /* Limit width on mobile */
+        min-height: auto;
     }
 
     .auth-brand-side {
-        flex: 0 0 320px; /* Fixed height for header area */
+        flex: 0 0 200px;
         width: 100%;
-        margin-left: 0;
-        padding-left: 0;
+        border-left: none;
+        border-bottom: 1px solid var(--glass-border);
+        padding: 2rem;
+    }
 
-        /* The curve needs to point DOWNWARDS into the white form area */
-        border-radius: 0 !important;
-        border-bottom-left-radius: 0;
-        border-top-left-radius: 0;
-
-        /* Actually screenshot 2 shows a big rounded bottom edge */
-        border-radius: 0 0 3rem 3rem;
-
-        margin-bottom: -2rem; /* Overlap */
-        z-index: 2;
+    .auth-brand-side img {
+        margin-top: 40px;
+        max-height: 190px;
+        border-radius: 50% 50% 0 0 !important;
     }
 
     .auth-form-side {
         padding: 2rem;
-        padding-top: 4rem; /* Space for the overlap */
-        border-radius: 2rem 2rem 0 0;
-        background: white;
-        z-index: 5;
+        background: transparent;
     }
 }
 
