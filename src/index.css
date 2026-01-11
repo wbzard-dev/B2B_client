@@ -14,12 +14,12 @@ body {
     width: 100%;
     /* overflow: hidden; Removed to allow scrolling on non-app-container pages */
     font-family: "Inter", sans-serif;
-    /* Warm Premium Background matching screenshot */
+    /* Screenshot-like neutral background */
     background: radial-gradient(
-        circle at 0% 0%,
-        #a48674 0%,
-        #68564b 40%,
-        #2f2521 100%
+        circle at 50% 0%,
+        #6b7280 0%,
+        #374151 40%,
+        #111827 100%
     );
     background-attachment: fixed;
     background-size: cover;
@@ -27,28 +27,22 @@ body {
 }
 
 :root {
-    /* Glassmorphism Palette - Warm & Premium */
-    /* Base Colors */
-    --primary: #f59e0b; /* Gold/Amber for accents */
+    /* Glassmorphism Palette - Refined */
+    --primary: #f59e0b; /* Amber/Gold accent from screenshot */
     --primary-hover: #d97706;
-    --secondary: rgba(255, 255, 255, 0.7);
 
-    /* Backgrounds - We handle the main bg on body, these are for overlays */
-    --bg-dark: rgba(0, 0, 0, 0.8);
-    --bg-light: transparent; /* Was #f8fafc */
+    /* Backgrounds */
+    --bg-dark: #1f1f1f; /* Fallback */
 
     /* Glass Surfaces */
-    --glass-bg: rgba(255, 255, 255, 0.07);
-    --glass-bg-dark: rgba(0, 0, 0, 0.2);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-highlight: rgba(255, 255, 255, 0.2);
-
-    --surface: var(--glass-bg); /* Mapped for existing classes */
-    --surface-alt: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-bg-dark: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
 
     /* Text */
     --text-main: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.7);
     --border: var(--glass-border);
 
     /* States */
@@ -57,16 +51,17 @@ body {
     --warning: #f59e0b;
 
     /* Shadows */
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 20px 50px 0 rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 20px 50px 0 rgba(0, 0, 0, 0.3);
 
     /* Radius */
-    --radius-md: 0.75rem;
-    --radius-lg: 1.25rem;
+    --radius-md: 1rem; /* More rounded */
+    --radius-lg: 1.5rem; /* Screenshot shows very rounded cards */
+    --radius-xl: 2rem;
 
     /* Effects */
-    --blur-md: blur(20px);
+    --blur-md: blur(24px); /* Stronger blur for that frosted look */
 }
 
 /* Layout & Sidebar */
@@ -810,24 +805,24 @@ tr:hover {
     display: none; /* Hidden on desktop */
 }
 
-/* Dashboard Header */
+/* Dashboard Header - Floating Text Style */
 .dashboard-header {
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.4) 0%,
-        rgba(0, 0, 0, 0.2) 100%
-    ); /* Darker glass for header */
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    color: white;
-    padding: 2.5rem;
-    border-radius: var(--radius-lg);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    color: var(--text-main);
+    padding: 1rem 0 2rem 0; /* Reduced padding, keep spacing below */
+    border-radius: 0;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--shadow-lg);
-    margin-bottom: 2.5rem;
+    align-items: flex-end; /* Align bottom of text */
+    box-shadow: none;
+    margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Legibility on bg */
 }
 
 /* Page Header */
@@ -1279,4 +1274,184 @@ tr:hover {
     font-size: 0.75rem;
     font-weight: 600;
     box-shadow: var(--shadow-sm);
+}
+
+/* Glass Dashboard Grid Layout */
+.dashboard-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Card Sizes for Grid */
+.feature-card {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.05)
+    );
+    min-height: 300px;
+}
+
+.action-card {
+    grid-column: span 1;
+}
+
+.warning-card {
+    grid-column: span 1;
+}
+
+.danger-card {
+    grid-column: span 1;
+}
+
+.wide-card {
+    grid-column: span 3;
+}
+
+/* Typography inside Cards */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.card-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.big-value {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    background: linear-gradient(to right, #fff, #ccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.mid-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.card-trend {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+.card-trend.up span {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.card-status-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.full-width {
+    width: 100%;
+    margin-top: auto;
+}
+
+.glass-btn {
+    border-radius: 12px;
+    padding: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+}
+
+/* Stats Row */
+.stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.stat-val.success {
+    color: var(--success);
+}
+
+.stat-lbl {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.vertical-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-action-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+.stat-action-link:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .dashboard-grid-layout {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .wide-card {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-grid-layout {
+        display: flex;
+        flex-direction: column;
+    }
 }

@@ -60,270 +60,150 @@ const CompanyDashboard = ({ user }) => {
 
     if (loading)
         return (
-            <div
-                className="container"
-                style={{ paddingTop: "4rem", textAlign: "center" }}
-            >
-                Initializing Command Center...
-            </div>
+            <div className="glass-loading">Initializing Command Center...</div>
         );
 
     return (
-        <div className="container">
-            {/* Dark Header Strip */}
+        <div className="container" style={{ maxWidth: "1400px" }}>
+            {/* Header Section - Floating Text */}
             <div className="dashboard-header">
                 <div>
                     <h1
                         style={{
-                            fontSize: "2.25rem",
-                            fontWeight: 800,
-                            marginBottom: "0.5rem",
-                            letterSpacing: "-0.025em",
+                            fontSize: "2.5rem",
+                            fontWeight: "700",
+                            margin: 0,
                         }}
                     >
-                        Command Center
+                        Hello, {user.name || "Alex"}
                     </h1>
-                    <p style={{ opacity: 0.7, fontFamily: "monospace" }}>
-                        ADMIN_ID:{" "}
-                        <span
-                            style={{
-                                background: "rgba(255,255,255,0.1)",
-                                padding: "0.2rem 0.5rem",
-                                borderRadius: "4px",
-                            }}
-                        >
-                            {user.entityId}
-                        </span>
+                    <p
+                        style={{
+                            opacity: 0.8,
+                            fontSize: "1.1rem",
+                            marginTop: "0.5rem",
+                        }}
+                    >
+                        Here is your daily command center update.
                     </p>
                 </div>
-                <div>
+                <div style={{ textAlign: "right" }}>
                     <div
                         style={{
-                            fontSize: "3rem",
-                            fontWeight: 800,
-                            lineHeight: 1,
+                            fontSize: "1rem",
+                            opacity: 0.8,
+                            marginBottom: "0.5rem",
                         }}
                     >
-                        ₹{metrics.totalRevenue.toLocaleString()}
+                        {new Date().toLocaleDateString("en-US", {
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                        })}
                     </div>
                     <div
-                        style={{
-                            opacity: 0.7,
-                            fontSize: "0.875rem",
-                            letterSpacing: "0.05em",
-                            textTransform: "uppercase",
-                        }}
+                        className="badge badge-info"
+                        style={{ fontSize: "0.9rem", padding: "0.5rem 1rem" }}
                     >
-                        Total Revenue
+                        ID: {user.entityId}
                     </div>
                 </div>
             </div>
 
-            {/* Action Required Section */}
-            <h2
-                style={{
-                    fontSize: "1.25rem",
-                    fontWeight: 600,
-                    marginBottom: "1rem",
-                    color: "var(--text-muted)",
-                }}
-            >
-                Attention Needed
-            </h2>
-            <div className="dashboard-grid" style={{ marginBottom: "3rem" }}>
-                {/* Pending Approvals */}
-                <div
-                    className="metric-card"
-                    style={{
-                        borderLeft: "none",
-                        borderTop: "4px solid var(--primary)",
-                        position: "relative",
-                        overflow: "hidden",
-                    }}
-                >
-                    <div
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            padding: "0.5rem",
-                            opacity: 0.1,
-                            fontSize: "4rem",
-                            fontWeight: 800,
-                        }}
-                    >
-                        users
+            {/* Main Grid Layout */}
+            <div className="dashboard-grid-layout">
+                {/* Revenue Card (Big Feature) */}
+                <div className="glass-card feature-card">
+                    <div className="card-header-row">
+                        <span className="card-label">Total Revenue</span>
+                        <span className="card-icon">💰</span>
                     </div>
-                    <div className="metric-title">Distributor Requests</div>
-                    <div className="metric-value">
-                        {metrics.pendingApprovals}
+                    <div className="big-value">
+                        ₹{metrics.totalRevenue.toLocaleString()}
                     </div>
+                    <div className="card-trend up">
+                        <span>+12.5%</span> from last month
+                    </div>
+                    <div className="chart-placeholder"></div>
+                </div>
+
+                {/* Distributor Requests (Action Item) */}
+                <div className="glass-card action-card">
+                    <div className="card-header-row">
+                        <span className="card-label">Distributor Requests</span>
+                        <div className="notification-dot"></div>
+                    </div>
+                    <div className="mid-value">{metrics.pendingApprovals}</div>
+                    <div className="card-status-text">Pending Approvals</div>
                     <Link
                         to="/distributors"
-                        className="btn btn-primary"
-                        style={{
-                            marginTop: "1rem",
-                            width: "-webkit-fill-available",
-                        }}
+                        className="btn btn-primary glass-btn full-width"
                     >
-                        Manage Approvals
+                        Manage Requests
                     </Link>
                 </div>
 
-                {/* Pending Payments */}
-                <div
-                    className="metric-card"
-                    style={{
-                        borderLeft: "none",
-                        borderTop: "4px solid var(--warning)",
-                    }}
-                >
-                    <div className="metric-title">Verify Payments</div>
-                    <div className="metric-value">
-                        {metrics.pendingPayments}
+                {/* Payment Verification */}
+                <div className="glass-card warning-card">
+                    <div className="card-header-row">
+                        <span className="card-label">Payment Verification</span>
+                        <span className="card-icon">⚠️</span>
                     </div>
+                    <div className="mid-value">{metrics.pendingPayments}</div>
+                    <div className="card-status-text">Orders Pending</div>
                     <Link
                         to="/orders"
-                        className="btn"
-                        style={{
-                            marginTop: "1rem",
-                            width: "-webkit-fill-available",
-                            background: "#fffbeb",
-                            color: "#b45309",
-                            border: "1px solid #fcd34d",
-                        }}
+                        className="btn btn-secondary glass-btn full-width"
                     >
                         Review Orders
                     </Link>
                 </div>
 
-                {/* Low Stock */}
-                <div
-                    className="metric-card"
-                    style={{
-                        borderLeft: "none",
-                        borderTop: "4px solid var(--danger)",
-                    }}
-                >
-                    <div className="metric-title">Critical Inventory</div>
-                    <div className="metric-value">{metrics.lowStockItems}</div>
+                {/* Low Stock (Critical) */}
+                <div className="glass-card danger-card">
+                    <div className="card-header-row">
+                        <span className="card-label">Critical Inventory</span>
+                        <span className="card-icon">📉</span>
+                    </div>
+                    <div className="mid-value">{metrics.lowStockItems}</div>
+                    <div className="card-status-text">Items Low Stock</div>
                     <Link
                         to="/products"
-                        className="btn btn-danger"
-                        style={{
-                            marginTop: "1rem",
-                            width: "-webkit-fill-available",
-                        }}
+                        className="btn btn-danger glass-btn full-width"
                     >
                         Restock Now
                     </Link>
                 </div>
-            </div>
 
-            {/* Overview Section */}
-            <h2
-                style={{
-                    fontSize: "1.25rem",
-                    fontWeight: 600,
-                    marginBottom: "1rem",
-                    color: "var(--text-muted)",
-                }}
-            >
-                System Overview
-            </h2>
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                    gap: "1.5rem",
-                }}
-            >
-                <div
-                    className="card"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <div>
-                        <div
-                            style={{
-                                fontSize: "0.875rem",
-                                color: "var(--text-muted)",
-                            }}
-                        >
-                            Orders (Last 7 Days)
+                {/* Recent Activity / Stats */}
+                <div className="glass-card wide-card">
+                    <div className="card-header-row">
+                        <span className="card-label">Recent Activity</span>
+                        <span className="card-icon">📊</span>
+                    </div>
+                    <div className="stats-row">
+                        <div className="stat-item">
+                            <span className="stat-val">
+                                {metrics.recentOrders}
+                            </span>
+                            <span className="stat-lbl">New Orders (7d)</span>
                         </div>
-                        <div style={{ fontSize: "1.5rem", fontWeight: 700 }}>
-                            {metrics.recentOrders}
+                        <div className="vertical-divider"></div>
+                        <div className="stat-item">
+                            <span className="stat-val success">98%</span>
+                            <span className="stat-lbl">System Health</span>
+                        </div>
+                        <div className="vertical-divider"></div>
+                        <div className="stat-item">
+                            <Link
+                                to="/products/new"
+                                className="stat-action-link"
+                            >
+                                + Add Product
+                            </Link>
                         </div>
                     </div>
-                </div>
-
-                <div
-                    className="card"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                    }}
-                >
-                    <div
-                        style={{
-                            background: "#ecfdf5",
-                            padding: "0.75rem",
-                            borderRadius: "50%",
-                            color: "#059669",
-                        }}
-                    >
-                        <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <div
-                            style={{
-                                fontSize: "0.875rem",
-                                color: "var(--text-muted)",
-                            }}
-                        >
-                            System Health
-                        </div>
-                        <div
-                            style={{
-                                fontSize: "1rem",
-                                fontWeight: 600,
-                                color: "#059669",
-                            }}
-                        >
-                            Operational
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className="card"
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                    }}
-                >
-                    <Link
-                        to="/products/new"
-                        className="btn btn-secondary"
-                        style={{ width: "-webkit-fill-available" }}
-                    >
-                        + Add New Product
-                    </Link>
                 </div>
             </div>
         </div>
