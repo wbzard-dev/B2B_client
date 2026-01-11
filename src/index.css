@@ -631,7 +631,7 @@ tr:hover {
         position: fixed;
         top: 0;
         left: -100%; /* Move completely off-screen based on viewport width */
-        height: 100vh;
+        height: 100dvh;
         z-index: 50;
         transition: left 0.3s ease-in-out;
         width: 260px;
