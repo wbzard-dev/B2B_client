@@ -241,7 +241,7 @@ const ProductList = () => {
             {/* Header Section */}
             <div className="page-header">
                 <div>
-                    <h1>Product Catalog</h1>
+                    <h1>Product Catalog({filteredProducts.length})</h1>
                     <p style={{ color: "var(--text-muted)" }}>
                         {user.entityType === "Company"
                             ? "Manage your inventory and pricing"
