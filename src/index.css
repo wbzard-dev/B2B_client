@@ -1,16 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     background-color: var(--bg-light);
 }
 
@@ -662,5 +665,63 @@ tr:hover {
     .main-content {
         padding: 0;
         width: 100%;
+    }
+}
+
+/* Sales Report Grid */
+.sales-item-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    align-items: end;
+    padding: 1.25rem;
+    background: var(--surface-alt);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+}
+
+.sales-item-quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sales-item-total-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+    .sales-item-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .sales-item-product {
+        grid-column: 1 / -1;
+    }
+
+    .sales-item-quantity {
+        grid-column: 1 / 2;
+    }
+
+    .sales-item-price-group {
+        grid-column: 2 / 3;
+    }
+
+    .sales-item-total-group {
+        grid-column: 1 / 2;
+        margin-top: 0.5rem;
+    }
+
+    .sales-item-remove {
+        grid-column: 2 / 3;
+        justify-self: end;
+        align-self: flex-end;
+        margin-bottom: 8px;
     }
 }
