@@ -85,72 +85,165 @@ const OrderHistory = () => {
 
     const generateReceipt = (order) => {
         const doc = new jsPDF();
+        const primaryColor = [79, 70, 229]; // Indigo
+        const accentColor = [243, 244, 246]; // Light Gray
 
-        // Header
-        doc.setFontSize(22);
-        doc.setTextColor(40);
-        doc.text("Order Receipt", 14, 20);
+        // --- Header Section ---
+        // Company Brand
+        doc.setFontSize(26);
+        doc.setTextColor(...primaryColor);
+        doc.setFont("helvetica", "bold");
+        doc.text("B2B Platform", 14, 22);
 
-        // Meta Info
         doc.setFontSize(10);
         doc.setTextColor(100);
+        doc.setFont("helvetica", "normal");
+        doc.text("123 Business Road, Tech City", 14, 28);
+        doc.text("support@b2bplatform.com", 14, 33);
 
+        // Invoice Label & Details (Right Aligned)
+        doc.setFontSize(26);
+        doc.setTextColor(180);
+        doc.text("RECEIPT", 140, 22);
+
+        doc.setFontSize(10);
+        doc.setTextColor(80);
         doc.text(
             `Order ID: #${order._id
                 .substring(order._id.length - 6)
                 .toUpperCase()}`,
-            14,
+            140,
             30
         );
         doc.text(
             `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
-            14,
+            140,
             35
         );
-        doc.text(`Status: ${order.status}`, 14, 40);
-        doc.text(`Payment Status: ${order.paymentStatus}`, 14, 45);
 
-        // Divider
-        doc.setDrawColor(200);
+        // Status Badges (Text equivalent)
+        doc.setFillColor(
+            ...(order.paymentStatus === "Paid"
+                ? [220, 252, 231]
+                : [254, 249, 195])
+        );
+        doc.rect(140, 39, 45, 7, "F");
+        doc.setTextColor(
+            ...(order.paymentStatus === "Paid" ? [22, 101, 52] : [133, 77, 14])
+        );
+        doc.setFontSize(9);
+        doc.text(`Payment: ${order.paymentStatus}`, 142, 43.5);
+
+        // --- Bill To Section ---
+        doc.setDrawColor(220);
         doc.line(14, 50, 196, 50);
 
-        // Items Table
-        const tableColumn = ["Product", "Quantity", "Price", "Total"];
+        doc.setFontSize(11);
+        doc.setTextColor(0);
+        doc.setFont("helvetica", "bold");
+        doc.text("Bill To:", 14, 60);
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(80);
+        if (user.entityType === "Company" && order.distributorId) {
+            doc.text(order.distributorId.name || "Distributor Name", 14, 66);
+        } else {
+            doc.text(user.name || "Valued Customer", 14, 66);
+        }
+        doc.text(`Status: ${order.status}`, 14, 71);
+
+        // --- Items Table ---
+        const tableColumn = ["Item Description", "Qty", "Unit Price", "Total"];
         const tableRows = [];
 
         if (order.items && order.items.length > 0) {
             order.items.forEach((item) => {
                 const itemData = [
-                    item.name || "Unknown Product",
+                    item.name || "Product",
                     item.quantity,
-                    `Rs. ${item.price}`,
-                    `Rs. ${item.quantity * item.price}`,
+                    `Rs. ${item.price.toLocaleString()}`,
+                    `Rs. ${(item.quantity * item.price).toLocaleString()}`,
                 ];
                 tableRows.push(itemData);
             });
         }
 
         autoTable(doc, {
-            startY: 55,
+            startY: 80,
             head: [tableColumn],
             body: tableRows,
-            theme: "grid",
-            headStyles: { fillColor: [79, 70, 229] }, // Matches primary color
+            theme: "striped",
+            headStyles: {
+                fillColor: primaryColor,
+                textColor: 255,
+                fontStyle: "bold",
+                halign: "center",
+            },
+            columnStyles: {
+                0: { cellWidth: 80 }, // Description
+                1: { halign: "center" }, // Qty
+                2: { halign: "right" }, // Price
+                3: { halign: "right", fontStyle: "bold" }, // Total
+            },
+            styles: {
+                cellPadding: 3,
+                fontSize: 10,
+                valign: "middle",
+                lineColor: [230, 230, 230],
+                lineWidth: 0.1,
+            },
+            alternateRowStyles: {
+                fillColor: [249, 250, 251],
+            },
         });
 
-        // Final Total
-        const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 60) + 10;
+        // --- Totals Section ---
+        const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 90) + 10;
 
-        doc.setFontSize(14);
-        doc.setTextColor(0);
-        doc.setFont("helvetica", "bold");
-        doc.text(`Total Amount: Rs. ${order.totalAmount}`, 14, finalY);
+        // Total Box Background
+        doc.setFillColor(...accentColor);
+        doc.rect(120, finalY - 5, 76, 25, "F");
 
-        // Footer
         doc.setFontSize(10);
+        doc.setTextColor(80);
         doc.setFont("helvetica", "normal");
+        doc.text("Subtotal:", 125, finalY + 2);
+        doc.text(`Rs. ${order.totalAmount.toLocaleString()}`, 190, finalY + 2, {
+            align: "right",
+        });
+
+        doc.text("Tax (0%):", 125, finalY + 7);
+        doc.text("Rs. 0", 190, finalY + 7, { align: "right" });
+
+        doc.setFontSize(12);
+        doc.setTextColor(...primaryColor);
+        doc.setFont("helvetica", "bold");
+        doc.text("Total:", 125, finalY + 15);
+        doc.text(
+            `Rs. ${order.totalAmount.toLocaleString()}`,
+            190,
+            finalY + 15,
+            { align: "right" }
+        );
+
+        // --- Footer ---
+        const pageHeight = doc.internal.pageSize.height;
+
+        doc.setDrawColor(220);
+        doc.line(14, pageHeight - 30, 196, pageHeight - 30);
+
+        doc.setFontSize(9);
         doc.setTextColor(150);
-        doc.text("Thank you for your business!", 14, finalY + 10);
+        doc.text("Thank you for your business!", 105, pageHeight - 20, {
+            align: "center",
+        });
+        doc.text(
+            "For questions, contact support@b2bplatform.com or call +1-234-567-8900",
+            105,
+            pageHeight - 15,
+            { align: "center" }
+        );
 
         doc.save(`Receipt_${order._id}.pdf`);
     };
@@ -174,7 +267,9 @@ const OrderHistory = () => {
                         <tr>
                             <th>Order ID</th>
                             <th>Date</th>
-                            {user.entityType === "Company" && <th>Distributor</th>}
+                            {user.entityType === "Company" && (
+                                <th>Distributor</th>
+                            )}
                             <th>Payment Due</th>
                             <th>Total Amount</th>
                             <th>Order Status</th>
@@ -241,7 +336,7 @@ const OrderHistory = () => {
                                                         order.paymentDueDate
                                                     ) &&
                                                     order.paymentStatus !==
-                                                    "Paid" && (
+                                                        "Paid" && (
                                                         <span
                                                             style={{
                                                                 color: "var(--danger)",
@@ -316,44 +411,44 @@ const OrderHistory = () => {
                                             <td data-label="Verification">
                                                 {order.paymentStatus ===
                                                     "Verification Pending" && (
-                                                        <button
-                                                            onClick={() =>
-                                                                verifyPayment(
-                                                                    order._id
-                                                                )
-                                                            }
-                                                            className="btn btn-success"
-                                                            style={{
-                                                                padding:
-                                                                    "0.25rem 0.5rem",
-                                                                fontSize: "0.75rem",
-                                                            }}
-                                                        >
-                                                            Verify Received
-                                                        </button>
-                                                    )}
+                                                    <button
+                                                        onClick={() =>
+                                                            verifyPayment(
+                                                                order._id
+                                                            )
+                                                        }
+                                                        className="btn btn-success"
+                                                        style={{
+                                                            padding:
+                                                                "0.25rem 0.5rem",
+                                                            fontSize: "0.75rem",
+                                                        }}
+                                                    >
+                                                        Verify Received
+                                                    </button>
+                                                )}
                                                 {order.paymentStatus ===
                                                     "Pending" && (
-                                                        <span
-                                                            style={{
-                                                                fontSize: "0.8rem",
-                                                                color: "var(--text-muted)",
-                                                            }}
-                                                        >
-                                                            Waiting
-                                                        </span>
-                                                    )}
+                                                    <span
+                                                        style={{
+                                                            fontSize: "0.8rem",
+                                                            color: "var(--text-muted)",
+                                                        }}
+                                                    >
+                                                        Waiting
+                                                    </span>
+                                                )}
                                                 {order.paymentStatus ===
                                                     "Paid" && (
-                                                        <span
-                                                            style={{
-                                                                fontSize: "0.8rem",
-                                                                color: "var(--success)",
-                                                            }}
-                                                        >
-                                                            ✓ Verified
-                                                        </span>
-                                                    )}
+                                                    <span
+                                                        style={{
+                                                            fontSize: "0.8rem",
+                                                            color: "var(--success)",
+                                                        }}
+                                                    >
+                                                        ✓ Verified
+                                                    </span>
+                                                )}
                                             </td>
                                             <td data-label="Ship/Deliver">
                                                 <div
@@ -364,68 +459,68 @@ const OrderHistory = () => {
                                                 >
                                                     {order.status ===
                                                         "Pending" && (
-                                                            <button
-                                                                onClick={() =>
-                                                                    updateStatus(
-                                                                        order._id,
-                                                                        "Confirmed"
-                                                                    )
-                                                                }
-                                                                className="btn btn-warning"
-                                                                style={{
-                                                                    padding:
-                                                                        "0.25rem 0.5rem",
-                                                                    fontSize:
-                                                                        "0.75rem",
-                                                                    backgroundColor:
-                                                                        "#f59e0b",
-                                                                    color: "white",
-                                                                    border: "none",
-                                                                }}
-                                                            >
-                                                                Confirm
-                                                            </button>
-                                                        )}
+                                                        <button
+                                                            onClick={() =>
+                                                                updateStatus(
+                                                                    order._id,
+                                                                    "Confirmed"
+                                                                )
+                                                            }
+                                                            className="btn btn-warning"
+                                                            style={{
+                                                                padding:
+                                                                    "0.25rem 0.5rem",
+                                                                fontSize:
+                                                                    "0.75rem",
+                                                                backgroundColor:
+                                                                    "#f59e0b",
+                                                                color: "white",
+                                                                border: "none",
+                                                            }}
+                                                        >
+                                                            Confirm
+                                                        </button>
+                                                    )}
                                                     {order.status ===
                                                         "Confirmed" && (
-                                                            <button
-                                                                onClick={() =>
-                                                                    updateStatus(
-                                                                        order._id,
-                                                                        "Shipped"
-                                                                    )
-                                                                }
-                                                                className="btn btn-primary"
-                                                                style={{
-                                                                    padding:
-                                                                        "0.25rem 0.5rem",
-                                                                    fontSize:
-                                                                        "0.75rem",
-                                                                }}
-                                                            >
-                                                                Ship
-                                                            </button>
-                                                        )}
+                                                        <button
+                                                            onClick={() =>
+                                                                updateStatus(
+                                                                    order._id,
+                                                                    "Shipped"
+                                                                )
+                                                            }
+                                                            className="btn btn-primary"
+                                                            style={{
+                                                                padding:
+                                                                    "0.25rem 0.5rem",
+                                                                fontSize:
+                                                                    "0.75rem",
+                                                            }}
+                                                        >
+                                                            Ship
+                                                        </button>
+                                                    )}
                                                     {order.status ===
                                                         "Shipped" && (
-                                                            <button
-                                                                onClick={() =>
-                                                                    updateStatus(
-                                                                        order._id,
-                                                                        "Delivered"
-                                                                    )
-                                                                }
-                                                                className="btn btn-success"
-                                                                style={{
-                                                                    padding:
-                                                                        "0.25rem 0.5rem",
-                                                                    fontSize:
-                                                                        "0.75rem",
-                                                                }}
-                                                            >
-                                                                Deliver
-                                                            </button>
-                                                        )}
+                                                        <button
+                                                            onClick={() =>
+                                                                updateStatus(
+                                                                    order._id,
+                                                                    "Delivered"
+                                                                )
+                                                            }
+                                                            className="btn btn-success"
+                                                            style={{
+                                                                padding:
+                                                                    "0.25rem 0.5rem",
+                                                                fontSize:
+                                                                    "0.75rem",
+                                                            }}
+                                                        >
+                                                            Deliver
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </>
@@ -435,7 +530,7 @@ const OrderHistory = () => {
                                         <td data-label="Payment">
                                             {order.paymentStatus !== "Paid" &&
                                                 order.paymentStatus !==
-                                                "Verification Pending" &&
+                                                    "Verification Pending" &&
                                                 order.status !== "Canceled" && (
                                                     <button
                                                         onClick={() =>
@@ -455,15 +550,15 @@ const OrderHistory = () => {
                                                 )}
                                             {order.paymentStatus ===
                                                 "Verification Pending" && (
-                                                    <span
-                                                        style={{
-                                                            fontSize: "0.8rem",
-                                                            color: "#854d0e",
-                                                        }}
-                                                    >
-                                                        Processing...
-                                                    </span>
-                                                )}
+                                                <span
+                                                    style={{
+                                                        fontSize: "0.8rem",
+                                                        color: "#854d0e",
+                                                    }}
+                                                >
+                                                    Processing...
+                                                </span>
+                                            )}
                                         </td>
                                     )}
                                 </tr>
