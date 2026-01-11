@@ -889,7 +889,7 @@ tr:hover {
         text-align: left !important;
         width: 100%;
         display: flex;
-        flex-direction: row-reverse;
+        flex-direction: column;
         justify-content: space-between;
         align-items: center;
     }

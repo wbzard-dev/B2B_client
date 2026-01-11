@@ -305,7 +305,7 @@ const AddProduct = () => {
                                 <p
                                     style={{
                                         fontSize: "0.9rem",
-                                        color: "#666",
+                                        color: "white",
                                     }}
                                 >
                                     Expected headers:{" "}
