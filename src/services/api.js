@@ -1,7 +1,11 @@
 import axios from "axios";
+const stieName =
+    window.location.hostname === "localhost"
+        ? "http://localhost:4000/api"
+        : "https://b2b-server-nz6h.onrender.com/api";
 
 const api = axios.create({
-    baseURL: "https://b2b-server-nz6h.onrender.com/api",
+    baseURL: stieName,
     headers: {
         "Content-Type": "application/json",
     },
