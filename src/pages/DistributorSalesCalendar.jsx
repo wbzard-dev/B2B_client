@@ -298,7 +298,7 @@ const DistributorSalesCalendar = ({
                                     >
                                         <span>
                                             {item.name} x {item.quantity}
-                                            {item.shopName && (
+                                            {item.shopName ? (
                                                 <div
                                                     style={{
                                                         fontSize: "0.75rem",
@@ -307,6 +307,16 @@ const DistributorSalesCalendar = ({
                                                     }}
                                                 >
                                                     Shop: {item.shopName}
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    style={{
+                                                        fontSize: "0.75rem",
+                                                        color: "red",
+                                                        marginTop: "2px",
+                                                    }}
+                                                >
+                                                    [Debug: No Shop Name info]
                                                 </div>
                                             )}
                                         </span>
