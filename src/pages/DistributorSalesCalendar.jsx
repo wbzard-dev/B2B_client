@@ -15,9 +15,10 @@ const DistributorSalesCalendar = ({
         const fetchSales = async () => {
             try {
                 const res = await api.get(
-                    `/distributor/company/sales/${distributorId}`
+                    `/distributor/company/sales/${distributorId}`,
                 );
                 setSales(res.data);
+                console.log("Fetched Sales:", res.data);
             } catch (err) {
                 console.error("Error fetching distributor sales:", err);
             } finally {
@@ -179,7 +180,7 @@ const DistributorSalesCalendar = ({
                             >
                                 {d}
                             </div>
-                        )
+                        ),
                     )}
 
                     {[...Array(firstDay)].map((_, i) => (
@@ -198,7 +199,7 @@ const DistributorSalesCalendar = ({
                         const hasSales = daySales.length > 0;
                         const totalDayAmount = daySales.reduce(
                             (acc, curr) => acc + curr.totalAmount,
-                            0
+                            0,
                         );
 
                         return (
@@ -282,7 +283,7 @@ const DistributorSalesCalendar = ({
                                 >
                                     Reported at{" "}
                                     {new Date(
-                                        sale.createdAt
+                                        sale.createdAt,
                                     ).toLocaleTimeString()}
                                 </div>
                                 {sale.items.map((item, i) => (
@@ -297,6 +298,17 @@ const DistributorSalesCalendar = ({
                                     >
                                         <span>
                                             {item.name} x {item.quantity}
+                                            {item.shopName && (
+                                                <div
+                                                    style={{
+                                                        fontSize: "0.75rem",
+                                                        color: "var(--text-muted)",
+                                                        marginTop: "2px",
+                                                    }}
+                                                >
+                                                    Shop: {item.shopName}
+                                                </div>
+                                            )}
                                         </span>
                                         <span style={{ fontWeight: 600 }}>
                                             ₹{item.total.toLocaleString()}

@@ -358,7 +358,10 @@ body {
     font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
 }
 
 .auth-btn:hover {
@@ -969,7 +972,7 @@ tr:hover {
 /* Sales Report Grid */
 .sales-item-grid {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+    grid-template-columns: 1.5fr 1.5fr 0.8fr 0.8fr 1fr auto; /* Adjusted for Shop Name */
     gap: 1.25rem;
     margin-bottom: 1.5rem;
     align-items: end;
@@ -992,11 +995,16 @@ tr:hover {
     padding-bottom: 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .sales-item-grid {
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
         padding: 1rem;
+    }
+
+    .sales-item-product,
+    .sales-item-shop {
+        grid-column: span 2;
     }
 
     .sales-item-product {
@@ -1112,7 +1120,9 @@ tr:hover {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
     display: flex;
     flex-direction: column;
 }
@@ -1243,7 +1253,10 @@ tr:hover {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 

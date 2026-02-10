@@ -23,7 +23,9 @@ const DailySalesReport = () => {
                 setProducts(prodRes.data);
                 setInventory(invRes.data);
                 // Initialize with an empty item
-                setSalesItems([{ productId: "", quantity: 1, price: 0 }]);
+                setSalesItems([
+                    { productId: "", quantity: 1, price: 0, shopName: "" },
+                ]);
             } catch (err) {
                 console.error("Error fetching data:", err);
             } finally {
@@ -36,7 +38,7 @@ const DailySalesReport = () => {
     const handleAddItem = () => {
         setSalesItems([
             ...salesItems,
-            { productId: "", quantity: 1, price: 0 },
+            { productId: "", quantity: 1, price: 0, shopName: "" },
         ]);
     };
 
@@ -63,7 +65,7 @@ const DailySalesReport = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validItems = salesItems.filter(
-            (item) => item.productId && item.quantity > 0
+            (item) => item.productId && item.quantity > 0,
         );
         if (validItems.length === 0) {
             alert("Please add at least one valid product");
@@ -73,14 +75,14 @@ const DailySalesReport = () => {
         // VALIDATION: Check stock levels
         for (const item of validItems) {
             const invItem = inventory.find(
-                (i) => i.productId?._id === item.productId
+                (i) => i.productId?._id === item.productId,
             );
             const availableStock = invItem ? invItem.quantity : 0;
             const product = products.find((p) => p._id === item.productId);
 
             if (item.quantity > availableStock) {
                 alert(
-                    `Insufficient stock for ${product?.name}. Available: ${availableStock}`
+                    `Insufficient stock for ${product?.name}. Available: ${availableStock}`,
                 );
                 return;
             }
@@ -104,7 +106,7 @@ const DailySalesReport = () => {
 
     const totalReportAmount = salesItems.reduce(
         (acc, curr) => acc + curr.quantity * curr.price,
-        0
+        0,
     );
 
     if (loading)
@@ -172,10 +174,10 @@ const DailySalesReport = () => {
                     </label>
                     {salesItems.map((item, index) => {
                         const selectedProduct = products.find(
-                            (p) => p._id === item.productId
+                            (p) => p._id === item.productId,
                         );
                         const invItem = inventory.find(
-                            (i) => i.productId?._id === item.productId
+                            (i) => i.productId?._id === item.productId,
                         );
                         const maxQuantity = invItem ? invItem.quantity : 0;
 
@@ -202,7 +204,7 @@ const DailySalesReport = () => {
                                             handleItemChange(
                                                 index,
                                                 "productId",
-                                                e.target.value
+                                                e.target.value,
                                             )
                                         }
                                         required
@@ -217,7 +219,7 @@ const DailySalesReport = () => {
                                                 inventory.find(
                                                     (i) =>
                                                         i.productId?._id ===
-                                                        p._id
+                                                        p._id,
                                                 );
                                             const stock = invItemOption
                                                 ? invItemOption.quantity
@@ -233,6 +235,38 @@ const DailySalesReport = () => {
                                             );
                                         })}
                                     </select>
+                                </div>
+                                <div className="sales-item-shop">
+                                    <label
+                                        style={{
+                                            display: "block",
+                                            fontSize: "0.75rem",
+                                            fontWeight: 700,
+                                            color: "var(--text-muted)",
+                                            marginBottom: "8px",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.05em",
+                                        }}
+                                    >
+                                        Shop Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={item.shopName || ""}
+                                        onChange={(e) =>
+                                            handleItemChange(
+                                                index,
+                                                "shopName",
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Enter Shop Name"
+                                        style={{
+                                            borderRadius: "10px",
+                                            fontWeight: 600,
+                                        }}
+                                    />
                                 </div>
                                 <div className="sales-item-quantity">
                                     <label
@@ -252,7 +286,7 @@ const DailySalesReport = () => {
                                             handleItemChange(
                                                 index,
                                                 "quantity",
-                                                val
+                                                val,
                                             )
                                         }
                                         max={maxQuantity}
@@ -281,7 +315,7 @@ const DailySalesReport = () => {
                                             handleItemChange(
                                                 index,
                                                 "price",
-                                                parseFloat(e.target.value) || 0
+                                                parseFloat(e.target.value) || 0,
                                             )
                                         }
                                         required
