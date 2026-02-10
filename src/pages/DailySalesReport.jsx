@@ -89,10 +89,6 @@ const DailySalesReport = () => {
         }
 
         setSubmitting(true);
-        console.log("Submitting Sales Report Payload:", {
-            items: validItems,
-            date: new Date(),
-        });
         try {
             await api.post("/distributor/sales/report", {
                 items: validItems,
