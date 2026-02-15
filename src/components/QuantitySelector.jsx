@@ -53,7 +53,7 @@ const QuantitySelector = ({
                     borderRadius: "8px",
                     border: "none",
                     background: value <= min ? "transparent" : "white",
-                    color: "var(--text-main)",
+                    color: value <= min ? "var(--text-main)" : "var(--bg-dark)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
