@@ -14,8 +14,8 @@ const OrderHistory = () => {
             const res = await api.get("/orders");
             setOrders(
                 res.data.sort(
-                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                )
+                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+                ),
             );
         } catch (err) {
             console.error("Error fetching orders", err);
@@ -113,23 +113,23 @@ const OrderHistory = () => {
                 .substring(order._id.length - 6)
                 .toUpperCase()}`,
             140,
-            30
+            30,
         );
         doc.text(
             `Date: ${new Date(order.createdAt).toLocaleDateString()}`,
             140,
-            35
+            35,
         );
 
         // Status Badges (Text equivalent)
         doc.setFillColor(
             ...(order.paymentStatus === "Paid"
                 ? [220, 252, 231]
-                : [254, 249, 195])
+                : [254, 249, 195]),
         );
         doc.rect(140, 39, 45, 7, "F");
         doc.setTextColor(
-            ...(order.paymentStatus === "Paid" ? [22, 101, 52] : [133, 77, 14])
+            ...(order.paymentStatus === "Paid" ? [22, 101, 52] : [133, 77, 14]),
         );
         doc.setFontSize(9);
         doc.text(`Payment: ${order.paymentStatus}`, 142, 43.5);
@@ -151,7 +151,14 @@ const OrderHistory = () => {
         } else {
             doc.text(user.name || "Valued Customer", 14, 66);
         }
-        doc.text(`Status: ${order.status}`, 14, 71);
+
+        let yPos = 71;
+        if (order.shopName) {
+            doc.text(`Shop: ${order.shopName}`, 14, yPos);
+            yPos += 5;
+        }
+
+        doc.text(`Status: ${order.status}`, 14, yPos);
 
         // --- Items Table ---
         const tableColumn = ["Item Description", "Qty", "Unit Price", "Total"];
@@ -224,7 +231,7 @@ const OrderHistory = () => {
             `Rs. ${order.totalAmount.toLocaleString()}`,
             190,
             finalY + 15,
-            { align: "right" }
+            { align: "right" },
         );
 
         // --- Footer ---
@@ -242,7 +249,7 @@ const OrderHistory = () => {
             "For questions, contact support@b2bplatform.com or call +1-234-567-8900",
             105,
             pageHeight - 15,
-            { align: "center" }
+            { align: "center" },
         );
 
         doc.save(`Receipt_${order._id}.pdf`);
@@ -306,7 +313,7 @@ const OrderHistory = () => {
                                     </td>
                                     <td data-label="Date">
                                         {new Date(
-                                            order.createdAt
+                                            order.createdAt,
                                         ).toLocaleDateString()}
                                     </td>
                                     {user.entityType === "Company" && (
@@ -328,12 +335,12 @@ const OrderHistory = () => {
                                                     }}
                                                 >
                                                     {new Date(
-                                                        order.paymentDueDate
+                                                        order.paymentDueDate,
                                                     ).toLocaleDateString()}
                                                 </span>
                                                 {new Date() >
                                                     new Date(
-                                                        order.paymentDueDate
+                                                        order.paymentDueDate,
                                                     ) &&
                                                     order.paymentStatus !==
                                                         "Paid" && (
@@ -368,7 +375,7 @@ const OrderHistory = () => {
                                     <td data-label="Order Status">
                                         <span
                                             className={`badge ${getStatusBadge(
-                                                order.status
+                                                order.status,
                                             )}`}
                                         >
                                             {order.status}
@@ -414,7 +421,7 @@ const OrderHistory = () => {
                                                     <button
                                                         onClick={() =>
                                                             verifyPayment(
-                                                                order._id
+                                                                order._id,
                                                             )
                                                         }
                                                         className="btn btn-success"
@@ -463,7 +470,7 @@ const OrderHistory = () => {
                                                             onClick={() =>
                                                                 updateStatus(
                                                                     order._id,
-                                                                    "Confirmed"
+                                                                    "Confirmed",
                                                                 )
                                                             }
                                                             className="btn btn-warning"
@@ -487,7 +494,7 @@ const OrderHistory = () => {
                                                             onClick={() =>
                                                                 updateStatus(
                                                                     order._id,
-                                                                    "Shipped"
+                                                                    "Shipped",
                                                                 )
                                                             }
                                                             className="btn btn-primary"
@@ -507,7 +514,7 @@ const OrderHistory = () => {
                                                             onClick={() =>
                                                                 updateStatus(
                                                                     order._id,
-                                                                    "Delivered"
+                                                                    "Delivered",
                                                                 )
                                                             }
                                                             className="btn btn-success"
@@ -535,7 +542,7 @@ const OrderHistory = () => {
                                                     <button
                                                         onClick={() =>
                                                             handlePayment(
-                                                                order._id
+                                                                order._id,
                                                             )
                                                         }
                                                         className="btn btn-primary"
