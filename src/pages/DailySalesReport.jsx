@@ -8,6 +8,7 @@ const DailySalesReport = () => {
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
     const [inventory, setInventory] = useState([]);
+    const [shops, setShops] = useState([]); // State for shops
     const [loading, setLoading] = useState(true);
     const [salesItems, setSalesItems] = useState([]);
     const [submitting, setSubmitting] = useState(false);
@@ -16,12 +17,16 @@ const DailySalesReport = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [prodRes, invRes] = await Promise.all([
+                // Fetch products, inventory, AND shops
+                const [prodRes, invRes, shopRes] = await Promise.all([
                     api.get("/products"),
                     api.get("/distributor/inventory"),
+                    api.get("/distributors/shop-data"), // Fetch shops
                 ]);
                 setProducts(prodRes.data);
                 setInventory(invRes.data);
+                setShops(shopRes.data); // Set shops state
+
                 // Initialize with an empty item
                 setSalesItems([
                     { productId: "", quantity: 1, price: 0, shopName: "" },
@@ -250,8 +255,7 @@ const DailySalesReport = () => {
                                     >
                                         Shop Name
                                     </label>
-                                    <input
-                                        type="text"
+                                    <select
                                         className="form-control"
                                         value={item.shopName || ""}
                                         onChange={(e) =>
@@ -261,12 +265,22 @@ const DailySalesReport = () => {
                                                 e.target.value,
                                             )
                                         }
-                                        placeholder="Enter Shop Name"
+                                        required
                                         style={{
                                             borderRadius: "10px",
                                             fontWeight: 600,
                                         }}
-                                    />
+                                    >
+                                        <option value="">Select Shop</option>
+                                        {shops.map((shop) => (
+                                            <option
+                                                key={shop._id}
+                                                value={shop.name}
+                                            >
+                                                {shop.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="sales-item-quantity">
                                     <label
