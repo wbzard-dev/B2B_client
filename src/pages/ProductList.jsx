@@ -13,19 +13,28 @@ const ProductList = () => {
     const [quantities, setQuantities] = useState({});
     const navigate = useNavigate();
 
+    const [shops, setShops] = useState([]);
+    const [showShopSelection, setShowShopSelection] = useState(false);
+    const [selectedShop, setSelectedShop] = useState("");
+
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchInitialData = async () => {
             try {
                 const res = await api.get("/products");
                 setProducts(res.data);
                 setFilteredProducts(res.data);
+
+                if (user?.entityType === "Distributor") {
+                    const shopRes = await api.get("/distributors/shop-data");
+                    setShops(shopRes.data);
+                }
             } catch (err) {
-                console.error("Error fetching products", err);
+                console.error("Error fetching data", err);
             }
             setLoading(false);
         };
-        fetchProducts();
-    }, []);
+        fetchInitialData();
+    }, [user]);
 
     useEffect(() => {
         const lower = searchQuery.toLowerCase();
@@ -34,8 +43,8 @@ const ProductList = () => {
                 (p) =>
                     p.name.toLowerCase().includes(lower) ||
                     p.sku.toLowerCase().includes(lower) ||
-                    (p.category && p.category.toLowerCase().includes(lower))
-            )
+                    (p.category && p.category.toLowerCase().includes(lower)),
+            ),
         );
     }, [searchQuery, products]);
 
@@ -43,7 +52,7 @@ const ProductList = () => {
         setQuantities({ ...quantities, [productId]: val });
     };
 
-    const handlePlaceOrder = async () => {
+    const handlePlaceOrder = () => {
         const items = Object.keys(quantities)
             .filter((id) => quantities[id] > 0)
             .map((id) => ({
@@ -56,9 +65,28 @@ const ProductList = () => {
             return;
         }
 
+        setShowShopSelection(true);
+    };
+
+    const confirmOrder = async () => {
+        if (!selectedShop) {
+            alert("Please select a shop to place the order for.");
+            return;
+        }
+
+        const items = Object.keys(quantities)
+            .filter((id) => quantities[id] > 0)
+            .map((id) => ({
+                productId: id,
+                quantity: quantities[id],
+            }));
+
         try {
-            await api.post("/orders", { items });
+            await api.post("/orders", { items, shopName: selectedShop });
             alert("Order Placed Successfully!");
+            setShowShopSelection(false);
+            setQuantities({});
+            setSelectedShop("");
             navigate("/orders");
         } catch (err) {
             alert("Order Failed: " + (err.response?.data?.msg || err.message));
@@ -71,7 +99,7 @@ const ProductList = () => {
     const handleRestock = async (product) => {
         const adjustmentStr = prompt(
             `Add stock to ${product.name} (Current: ${product.stock}):`,
-            "0"
+            "0",
         );
         if (adjustmentStr !== null && adjustmentStr !== "0") {
             const adjustmentVal = parseInt(adjustmentStr);
@@ -82,7 +110,7 @@ const ProductList = () => {
 
             const reason = prompt(
                 "Enter reason for restocking:",
-                adjustmentVal > 0 ? "Regular Restock" : "Adjustment"
+                adjustmentVal > 0 ? "Regular Restock" : "Adjustment",
             );
             if (reason === null) return; // Cancel if no reason
 
@@ -93,19 +121,19 @@ const ProductList = () => {
                 });
                 // Update with server response to be sure
                 const updated = products.map((p) =>
-                    p._id === product._id ? { ...p, stock: res.data.stock } : p
+                    p._id === product._id ? { ...p, stock: res.data.stock } : p,
                 );
                 setProducts(updated);
                 alert(
                     `Stock successfully ${
                         adjustmentVal > 0 ? "added" : "reduced"
-                    }!`
+                    }!`,
                 );
             } catch (err) {
                 console.error(err);
                 alert(
                     "Failed to update stock: " +
-                        (err.response?.data?.msg || err.message)
+                        (err.response?.data?.msg || err.message),
                 );
             }
         }
@@ -140,11 +168,77 @@ const ProductList = () => {
         );
 
     const totalSelected = Object.keys(quantities).filter(
-        (id) => quantities[id] > 0
+        (id) => quantities[id] > 0,
     ).length;
 
     return (
         <div className="container">
+            {/* Shop Selection Modal */}
+            {showShopSelection && (
+                <div className="modal-overlay">
+                    <div
+                        className="modal-content"
+                        style={{ maxWidth: "500px" }}
+                    >
+                        <div className="modal-header">
+                            <h3>Select Shop for Order</h3>
+                            <button
+                                className="btn-close"
+                                onClick={() => setShowShopSelection(false)}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div style={{ padding: "1.5rem 0" }}>
+                            <p
+                                style={{
+                                    marginBottom: "1rem",
+                                    color: "var(--text-muted)",
+                                }}
+                            >
+                                Please select the shop you are placing this
+                                order for:
+                            </p>
+                            <select
+                                className="form-control"
+                                value={selectedShop}
+                                onChange={(e) =>
+                                    setSelectedShop(e.target.value)
+                                }
+                                style={{
+                                    width: "100%",
+                                    padding: "0.75rem",
+                                    borderRadius: "8px",
+                                    border: "1px solid var(--border)",
+                                }}
+                            >
+                                <option value="">-- Select a Shop --</option>
+                                {shops.map((shop) => (
+                                    <option key={shop._id} value={shop.name}>
+                                        {shop.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => setShowShopSelection(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="btn btn-primary"
+                                onClick={confirmOrder}
+                                disabled={!selectedShop}
+                            >
+                                Confirm & Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Stock History Modal */}
             {showHistory && (
                 <div className="modal-overlay">
@@ -183,7 +277,7 @@ const ProductList = () => {
                                         <tr key={log._id}>
                                             <td style={{ fontSize: "0.8rem" }}>
                                                 {new Date(
-                                                    log.createdAt
+                                                    log.createdAt,
                                                 ).toLocaleString()}
                                             </td>
                                             <td style={{ fontSize: "0.8rem" }}>
@@ -499,7 +593,7 @@ const ProductList = () => {
                                                     onChange={(val) =>
                                                         handleQuantityChange(
                                                             product._id,
-                                                            val
+                                                            val,
                                                         )
                                                     }
                                                     max={product.stock}
