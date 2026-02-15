@@ -20,6 +20,7 @@ import DailySalesReport from "./pages/DailySalesReport";
 import CompanyAnalytics from "./pages/CompanyAnalytics";
 import EmployeeManagement from "./pages/EmployeeManagement";
 import Profile from "./pages/Profile";
+import ShopOnboarding from "./pages/ShopOnboarding";
 const App = () => {
     return (
         <AuthProvider>
@@ -53,6 +54,10 @@ const App = () => {
                         <Route
                             path="/sales-report"
                             element={<DailySalesReport />}
+                        />
+                        <Route
+                            path="/shop-onboarding"
+                            element={<ShopOnboarding />}
                         />
                         <Route
                             path="/analytics"

@@ -93,6 +93,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                             >
                                 Sales Report
                             </Link>
+                            <Link
+                                to="/shop-onboarding"
+                                className={isActive("/shop-onboarding")}
+                            >
+                                Shop Onboarding
+                            </Link>
                         </>
                     )}
                 </div>
